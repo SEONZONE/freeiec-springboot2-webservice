@@ -28,9 +28,9 @@ public class PostsService {
     @Transactional
     public Long update(Long id, PostsUpdateRequestDto requestDto) {
         Posts posts = postsRepository.findById(id).orElseThrow(() -> new
-                IllegalArgumentException("해당 게시글이 없습니다. id="+ id));
+                IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
 
-        posts.update(requestDto.getTitle(),requestDto.getContent());
+        posts.update(requestDto.getTitle(), requestDto.getContent());
         return id;
 
     }
@@ -42,17 +42,32 @@ public class PostsService {
                 .collect(Collectors.toList());
     }
     /* findAllDesc 메소드의 트랜잭션 어노테이션(@Transactional)에 옵션이 하나 추가하였다.
-    * (readOnly = true) 를 주면 트랜잭션 범위는 유지하되, 조회 기능만 남겨두어 조회 속도가 개선되기 때문에 등록, 수정, 삭제 기능이 전혀 없는
-    * 서비스 메소드에서 사용하는 것을 추천한다,
-    * .map(PostListResponseDto::new)의 실제로 .map(posts -> new PoststListResponseDto(posts))
-    * postsRepository 결과로 넘어온 Posts의 Stream을 map을 통해 PostListResponseDto 변환 -> List로 반환하는 메소드이다.
-    *
-    * */
+     * (readOnly = true) 를 주면 트랜잭션 범위는 유지하되, 조회 기능만 남겨두어 조회 속도가 개선되기 때문에 등록, 수정, 삭제 기능이 전혀 없는
+     * 서비스 메소드에서 사용하는 것을 추천한다,
+     * .map(PostListResponseDto::new)의 실제로 .map(posts -> new PoststListResponseDto(posts))
+     * postsRepository 결과로 넘어온 Posts의 Stream을 map을 통해 PostListResponseDto 변환 -> List로 반환하는 메소드이다.
+     *
+     * */
 
 
+    @Transactional
+    public void delete(Long id) {
+        Posts posts = postsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
+
+        postsRepository.delete(posts);
+        /*postsRepository.delete(posts)
+         * JpaRepository에서 이미 delete 메소드를 지원하고 있으니 이를 활용
+         * 엔티티를 파라미터로 삭제할 수도 있고, deleteById 메소드를 이용하면 id를 삭제 할 수 있다.
+         * 존재하는 Posts인지 확인을 위해 엔티티 조회 후 그대로 삭제 */
+    }
+
+
+    @Transactional(readOnly = true)
     public PostsResponseDto findById(Long id) {
-         Posts entity = postsRepository.findById(id).orElseThrow(() -> new
-                 IllegalArgumentException("해당 게시글이 없습니다. id="+ id));
-         return new PostsResponseDto(entity);
+        Posts entity = postsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id));
+
+        return new PostsResponseDto(entity);
     }
 }
