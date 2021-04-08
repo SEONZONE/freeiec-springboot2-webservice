@@ -15,3 +15,4 @@ public class Application { //메인 클래스
         SpringApplication.run(Application.class, args);
     }
 }
+//seonzone
