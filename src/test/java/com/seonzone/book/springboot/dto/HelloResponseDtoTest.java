@@ -3,6 +3,8 @@ import com.seonzone.book.springboot.web.dto.HelloResponseDto;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+
 public class HelloResponseDtoTest {
 
     @Test
@@ -25,4 +27,8 @@ public class HelloResponseDtoTest {
         *                assertThat에 있는 값과 isThatTo의 값을 비교해서 같을 때만 성공이다.
         *  */
     }
+
+
+
+
 }
